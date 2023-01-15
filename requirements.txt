@@ -1,3 +1,4 @@
+python==3.8.5
 autoit==0.2.6
 certifi==2022.6.15.1
 charset-normalizer==2.1.1
@@ -12,7 +13,7 @@ PyGetWindow==0.0.9
 PyMsgBox==1.0.9
 pynput==1.7.6
 pyperclip==1.8.2
-pypiwin32==223
+pypiwin32==301
 PyRect==0.2.0
 PyScreeze==0.1.28
 pyTelegramBotAPI==4.7.0
