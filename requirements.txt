@@ -12,7 +12,8 @@ PyGetWindow==0.0.9
 PyMsgBox==1.0.9
 pynput==1.7.6
 pyperclip==1.8.2
-pypiwin32==223
+pywin32==303
+platform_system=="Windows"
 PyRect==0.2.0
 PyScreeze==0.1.28
 pyTelegramBotAPI==4.7.0
