@@ -1,0 +1,1 @@
+worker: python new_magva_weather_bot.py
