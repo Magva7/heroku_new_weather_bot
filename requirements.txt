@@ -17,7 +17,7 @@ PyRect==0.2.0
 PyScreeze==0.1.28
 pyTelegramBotAPI==4.7.0
 pytweening==1.0.4
-piwin32==223
+pywin32-ctypes==0.2.0
 pywinauto==0.6.8
 requests==2.28.1
 urllib3==1.26.12
