@@ -3,7 +3,6 @@ import requests  # для запроса адреса по координата�
 from telebot import types
 import datetime
 from datetime import datetime, timedelta  # для перевода времени с UTC на человеческий
-# os.system('cls||clear')  # очистка консоли перед запуском
 
 bot = telebot.TeleBot('1706338684:AAGojuK3Xw50cqr1osXwC6uvTRql0gQ-5cw')  # Создаем бота
 ya_token = 'a080eb21-a250-4036-8bee-7b2c7e97f34a'
@@ -30,21 +29,6 @@ def send_hi_and_button(message): # функция, внутрь которой �
     # print(message)  # для интереса содержимое объекта message, т.е. все данные по тому человеку, который написал
 
 # =================================================================================================
-
-@bot.message_handler(commands=['ping'])  # прослушивание команды /ping
-def send_welcome(message):  # действия
-    bot.reply_to(message, f'pong')
-    print('Получена команда ping, отправлен ответ')
-    
-
-@bot.message_handler(content_types=["text"])  # Получение сообщений от юзера
-def handle_text(message):
-    if message.text == 'ping':
-        bot.send_message(message.chat.id, 'pong')
-        print('Получен текст: ', message.text, ', отправлен ответ pong')
-    else:
-        bot.send_message(message.chat.id, 'Вы написали: ' + message.text)
-        print('Получен текст: ', message.text, ', отправлен ответ')
 
 # Блок получения координат и ответа об этом пользователю
 @bot.message_handler(content_types=['location'])  # прослушивание, что боту передали координаты

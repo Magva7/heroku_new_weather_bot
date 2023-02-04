@@ -3,6 +3,7 @@ import requests  # для запроса адреса по координата�
 from telebot import types
 import datetime
 from datetime import datetime, timedelta  # для перевода времени с UTC на человеческий
+# os.system('cls||clear')  # очистка консоли перед запуском
 
 bot = telebot.TeleBot('1706338684:AAGojuK3Xw50cqr1osXwC6uvTRql0gQ-5cw')  # Создаем бота
 ya_token = 'a080eb21-a250-4036-8bee-7b2c7e97f34a'
@@ -29,6 +30,21 @@ def send_hi_and_button(message): # функция, внутрь которой �
     # print(message)  # для интереса содержимое объекта message, т.е. все данные по тому человеку, который написал
 
 # =================================================================================================
+
+@bot.message_handler(commands=['ping'])  # прослушивание команды /ping
+def send_welcome(message):  # действия
+    bot.reply_to(message, f'pong')
+    print('Получена команда ping, отправлен ответ')
+    
+
+@bot.message_handler(content_types=["text"])  # Получение сообщений от юзера
+def handle_text(message):
+    if message.text == 'ping':
+        bot.send_message(message.chat.id, 'pong')
+        print('Получен текст: ', message.text, ', отправлен ответ pong')
+    else:
+        bot.send_message(message.chat.id, 'Вы написали: ' + message.text)
+        print('Получен текст: ', message.text, ', отправлен ответ')
 
 # Блок получения координат и ответа об этом пользователю
 @bot.message_handler(content_types=['location'])  # прослушивание, что боту передали координаты
@@ -61,8 +77,15 @@ def location(message):
 
         # распарсиваем результат
         timezone_offset = forecast_wea_data['timezone_offset']  # смещение часового пояса в секундах
-        current_temp = '\nСейчас:  ' + '' + str(round(forecast_wea_data['current']['temp'])) + ' по цельсию'
-        current_wind = 'Ветер:   ' + str(round(forecast_wea_data['current']['wind_speed'])) + ' м/с'
+
+        # проверяем температуру, если больше нуля, то добавляем +
+        temp_for_check = round(forecast_wea_data['current']['temp'])
+        if temp_for_check > 0:
+            temp_for_check = '+' + str(temp_for_check)
+        # print(temp_for_check)
+
+        current_temp = '\nСейчас:  ' + '' + str(temp_for_check) + ' по цельсию'
+        current_wind = 'Ветер:  ' + str(round(forecast_wea_data['current']['wind_speed'])) + ' м/с'
         current_rain = forecast_wea_data['current']['weather'][0]['description']  # осадки
 
         current_weather = current_temp + '\n' + current_wind + ', ' + current_rain  # погода на текущий момент
@@ -77,15 +100,27 @@ def location(message):
             # без смещения
             my_this_forecast_time_human = (datetime.utcfromtimestamp(my_this_forecast_time_unix) + timedelta(hours=(
                     timezone_offset / 3600))).strftime('%H:%M')  # смещение времени
-            my_this_orecast_temp = str(round(my_this_forecast['temp']))  # температура в первом прогнозе
-            my_this_forecast_feels_like = ' ощущается как ' + str(
-                round(my_this_forecast['feels_like']))  # температура, как ощущается
-            my_this_forecast_wind_speed = 'Ветер:  ' + str(
-                round(my_this_forecast['wind_speed'])) + ' м/с'  # скорость ветра
+
+
+            # проверяем температуру в каждом прогнозе, если больше 0, добавляем +
+            check_my_this_forecast_temp = round(my_this_forecast['temp'])
+            if check_my_this_forecast_temp > 0:
+                check_my_this_forecast_temp = '+' + str(check_my_this_forecast_temp)
+            my_this_forecast_temp = str(check_my_this_forecast_temp)  # температура в первом прогнозе
+
+            # проверяем температуру, которая ощущается в каждом прогнозе, если больше 0, добавляем +
+            check_my_this_forecast_feels_like = round(my_this_forecast['feels_like'])
+            if check_my_this_forecast_feels_like > 0:
+                check_my_this_forecast_feels_like = '+' + str(check_my_this_forecast_feels_like)
+            my_this_forecast_feels_like = ' ощущается как ' + str(check_my_this_forecast_feels_like)  # температура, как ощущается
+
+
+            # my_this_forecast_wind_speed = 'Ветер:  ' + str(
+            #     round(my_this_forecast['wind_speed'])) + ' м/с'  # скорость ветра
             my_this_forecast_rain = my_this_forecast['weather'][0]['description']  # осадки
 
-            my_this_forecast_sum = my_this_forecast_time_human + '   ' + \
-                                   my_this_orecast_temp + \
+            my_this_forecast_sum = my_this_forecast_time_human + '  ' + \
+                                   my_this_forecast_temp + \
                                    ',' + my_this_forecast_feels_like + ', ' + my_this_forecast_rain
 
             all_forecast += my_this_forecast_sum + '\n'
